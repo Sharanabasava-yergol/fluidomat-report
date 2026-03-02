@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fluidomat Ltd — Deep Dive Analyst Report</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=IBM+Plex+Mono:wght@400;600&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0f0e0b;
+    --paper: #f5f0e8;
+    --cream: #ede8db;
+    --accent: #b5430a;
+    --gold: #c9973a;
+    --green: #1a6b3c;
+    --red: #b5130a;
+    --mid: #5a5548;
+    --light: #d8d2c4;
+    --border: #c4bfb2;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-size: 16px;
+    line-height: 1.7;
+  }
+  .masthead {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 40px 60px 32px;
+    border-bottom: 4px solid var(--gold);
+    position: relative;
+    overflow: hidden;
+  }
+  .masthead::before {
+    content: 'FLUIDOMAT';
+    position: absolute;
+    right: -20px;
+    top: -30px;
+    font-family: 'Playfair Display', serif;
+    font-size: 160px;
+    font-weight: 900;
+    color: rgba(255,255,255,0.04);
+    letter-spacing: -4px;
+    line-height: 1;
+    pointer-events: none;
+  }
+  .report-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 3px;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+  .masthead h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 52px;
+    font-weight: 900;
+    line-height: 1.1;
+    margin-bottom: 8px;
+  }
+  .masthead h1 span { color: var(--gold); }
+  .masthead .subtitle {
+    font-size: 14px;
+    color: rgba(245,240,232,0.65);
+    font-style: italic;
+    margin-bottom: 28px;
+  }
+  .meta-row {
+    display: flex;
+    gap: 40px;
+    flex-wrap: wrap;
+    border-top: 1px solid rgba(255,255,255,0.15);
+    padding-top: 20px;
+  }
+  .meta-item { }
+  .meta-item .mlabel {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--gold);
+    text-transform: uppercase;
+    display: block;
+  }
+  .meta-item .mvalue {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--paper);
+  }
+  .verdict-banner {
+    background: var(--green);
+    color: white;
+    padding: 20px 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  .verdict-text { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; }
+  .verdict-sub { font-size: 13px; opacity: 0.85; margin-top: 2px; }
+  .target-pill {
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.35);
+    padding: 10px 28px;
+    border-radius: 4px;
+    text-align: center;
+  }
+  .target-pill .tp-label { font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 2px; opacity: 0.75; }
+  .target-pill .tp-val { font-size: 28px; font-weight: 700; font-family: 'Playfair Display', serif; }
+  .main-content {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 48px 60px;
+  }
+  .section {
+    margin-bottom: 48px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 40px;
+  }
+  .section:last-child { border-bottom: none; }
+  .section-head {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+  .section-num {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--gold);
+    letter-spacing: 2px;
+    min-width: 36px;
+  }
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 26px;
+    font-weight: 700;
+    line-height: 1.2;
+  }
+  .section-line {
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+  p { margin-bottom: 14px; color: #2a2820; font-size: 15.5px; }
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 16px;
+    margin-bottom: 28px;
+  }
+  .kpi-card {
+    background: var(--cream);
+    border: 1px solid var(--border);
+    padding: 18px 20px;
+    border-radius: 4px;
+  }
+  .kpi-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    color: var(--mid);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .kpi-val {
+    font-size: 24px;
+    font-weight: 700;
+    font-family: 'Playfair Display', serif;
+    color: var(--ink);
+  }
+  .kpi-sub { font-size: 12px; color: var(--mid); font-style: italic; }
+  .kpi-val.green { color: var(--green); }
+  .kpi-val.red { color: var(--red); }
+  .kpi-val.gold { color: var(--gold); }
+
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
+  @media (max-width: 720px) { .two-col { grid-template-columns: 1fr; } }
+
+  .bull-bear-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  @media (max-width: 720px) { .bull-bear-grid { grid-template-columns: 1fr; } }
+
+  .thesis-card {
+    border-radius: 4px;
+    padding: 24px;
+    border: 1px solid;
+  }
+  .thesis-card.bull {
+    background: #f0f7f3;
+    border-color: #a8d5b9;
+  }
+  .thesis-card.bear {
+    background: #fdf3f2;
+    border-color: #e8b5b0;
+  }
+  .thesis-card h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 17px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .thesis-card.bull h3 { color: var(--green); }
+  .thesis-card.bear h3 { color: var(--red); }
+  .thesis-item {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 12px;
+    font-size: 14.5px;
+    line-height: 1.55;
+  }
+  .thesis-bullet {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    margin-top: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: 700;
+    color: white;
+  }
+  .bull .thesis-bullet { background: var(--green); }
+  .bear .thesis-bullet { background: var(--red); }
+
+  .revenue-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    margin-bottom: 20px;
+  }
+  .revenue-table th {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--mid);
+    padding: 8px 12px;
+    border-bottom: 2px solid var(--ink);
+    text-align: left;
+    background: var(--cream);
+  }
+  .revenue-table td {
+    padding: 9px 12px;
+    border-bottom: 1px solid var(--border);
+    font-family: 'IBM Plex Mono', monospace;
+  }
+  .revenue-table tr:hover td { background: var(--cream); }
+  .highlight-row td { font-weight: 700; color: var(--green); }
+  .bar-chart { margin: 20px 0; }
+  .bar-row { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+  .bar-label { width: 70px; font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--mid); flex-shrink: 0; }
+  .bar-track { flex: 1; background: var(--light); height: 22px; border-radius: 2px; overflow: hidden; position: relative; }
+  .bar-fill { height: 100%; border-radius: 2px; display: flex; align-items: center; padding-left: 8px; }
+  .bar-fill span { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: white; font-weight: 600; }
+  .bar-val { width: 60px; font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--ink); flex-shrink: 0; text-align: right; }
+
+  .scenario-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 16px; }
+  @media (max-width: 720px) { .scenario-grid { grid-template-columns: 1fr; } }
+  .scenario-card { border-radius: 4px; padding: 22px 20px; text-align: center; border: 1px solid; }
+  .scenario-card.bear-s { background: #fdf3f2; border-color: #e8b5b0; }
+  .scenario-card.base { background: #f5f7ee; border-color: #b5c8a0; }
+  .scenario-card.bull-s { background: #edf5f0; border-color: #8bc9a8; }
+  .scenario-card .sc-label { font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 8px; }
+  .scenario-card.bear-s .sc-label { color: var(--red); }
+  .scenario-card.base .sc-label { color: #5a7a30; }
+  .scenario-card.bull-s .sc-label { color: var(--green); }
+  .scenario-card .sc-price { font-family: 'Playfair Display', serif; font-size: 36px; font-weight: 900; margin-bottom: 4px; }
+  .scenario-card .sc-ret { font-size: 13px; font-weight: 600; }
+  .scenario-card .sc-desc { font-size: 12px; color: var(--mid); margin-top: 8px; line-height: 1.45; }
+
+  .risk-tag {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 3px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    margin-bottom: 6px;
+  }
+  .risk-high { background: #ffe0de; color: var(--red); }
+  .risk-med { background: #fff3d6; color: #8a5a00; }
+  .risk-low { background: #dff2e8; color: var(--green); }
+
+  .moat-meter { margin: 12px 0 20px; }
+  .moat-row { display: flex; align-items: center; gap: 14px; margin-bottom: 10px; }
+  .moat-name { width: 180px; font-size: 13.5px; color: var(--ink); flex-shrink: 0; }
+  .moat-track { flex: 1; background: var(--light); height: 10px; border-radius: 5px; overflow: hidden; }
+  .moat-fill { height: 100%; border-radius: 5px; background: linear-gradient(90deg, var(--gold), var(--green)); }
+  .moat-score { width: 32px; text-align: right; font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 600; color: var(--mid); }
+
+  .final-verdict {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 40px 48px;
+    border-radius: 6px;
+    margin-top: 32px;
+    position: relative;
+    overflow: hidden;
+  }
+  .final-verdict::after {
+    content: '★';
+    position: absolute;
+    right: 40px;
+    bottom: -10px;
+    font-size: 120px;
+    color: rgba(201,151,58,0.1);
+    pointer-events: none;
+  }
+  .final-verdict h2 { font-family: 'Playfair Display', serif; font-size: 30px; color: var(--gold); margin-bottom: 16px; }
+  .final-verdict p { color: rgba(245,240,232,0.85); font-size: 15px; }
+  .verdict-bullets { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 20px 0; }
+  @media (max-width: 600px) { .verdict-bullets { grid-template-columns: 1fr; } }
+  .vb-item { font-size: 14px; color: rgba(245,240,232,0.8); display: flex; gap: 8px; align-items: flex-start; }
+  .vb-dot { color: var(--gold); flex-shrink: 0; font-size: 16px; line-height: 1.5; }
+
+  .footnote {
+    margin-top: 48px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+    font-size: 12px;
+    color: var(--mid);
+    font-style: italic;
+    line-height: 1.6;
+  }
+
+  .callout {
+    background: linear-gradient(135deg, #f9f4ea, #f0ebe0);
+    border-left: 4px solid var(--gold);
+    padding: 18px 22px;
+    margin: 20px 0;
+    border-radius: 0 4px 4px 0;
+  }
+  .callout strong { color: var(--accent); }
+</style>
+</head>
+<body>
+
+<div class="masthead">
+  <div class="report-label">⬛ Equity Research · Deep Dive · BSE: 522017</div>
+  <h1>Fluidomat <span>Ltd.</span></h1>
+  <div class="subtitle">India's Niche King of Fluid Couplings — An Undervalued Industrial Compounder</div>
+  <div class="meta-row">
+    <div class="meta-item"><span class="mlabel">CMP (Feb 2026)</span><span class="mvalue">₹ ~600–660</span></div>
+    <div class="meta-item"><span class="mlabel">Market Cap</span><span class="mvalue">₹ ~300 Cr</span></div>
+    <div class="meta-item"><span class="mlabel">52W High / Low</span><span class="mvalue">₹ 1,419 / 559</span></div>
+    <div class="meta-item"><span class="mlabel">Sector</span><span class="mvalue">Industrial Mfg</span></div>
+    <div class="meta-item"><span class="mlabel">Report Date</span><span class="mvalue">02 Mar 2026</span></div>
+  </div>
+</div>
+
+<div class="verdict-banner">
+  <div>
+    <div class="verdict-text">⭐ STRONG BUY — Accumulate at Current Levels</div>
+    <div class="verdict-sub">Near 52-week lows · 60%+ correction from peak · Fundamentals intact · Capacity expansion underway</div>
+  </div>
+  <div style="display:flex;gap:16px;flex-wrap:wrap;">
+    <div class="target-pill">
+      <div class="tp-label">3-Year Target</div>
+      <div class="tp-val">₹ 1,800</div>
+      <div class="tp-label">~3x from CMP</div>
+    </div>
+    <div class="target-pill">
+      <div class="tp-label">5-Year Bull Case</div>
+      <div class="tp-val">₹ 3,500+</div>
+      <div class="tp-label">~5–6x from CMP</div>
+    </div>
+  </div>
+</div>
+
+<div class="main-content">
+
+  <!-- Section 1: Company Overview -->
+  <div class="section">
+    <div class="section-head">
+      <span class="section-num">01</span>
+      <h2 class="section-title">Company Overview — The Business</h2>
+      <div class="section-line"></div>
+    </div>
+    <p>Fluidomat Limited, incorporated in 1971 and headquartered in Dewas (Madhya Pradesh), is India's <strong>leading niche manufacturer of fluid couplings</strong> — both fixed-speed and variable-speed variants — for industrial and automotive drives up to 3,800 KW. The company is ISO 9001:2015, ISO 14001:2015, and OHSAS 45001:2018 certified, reflecting its quality-first DNA.</p>
+    <p>Fluid couplings are mission-critical torque-transmitting devices used in heavy industries. Fluidomat's products are embedded in thermal power plants, steel & metal plants, cement factories, coal mines, ore-handling facilities, port cranes, paper mills, fertilizer plants, and chemical industries. This creates a deeply entrenched, sticky customer base — once installed, these systems rarely get replaced with a competing brand.</p>
+    <p>The company has a 200-person workforce, a wholly owned UK subsidiary (Fluidomat UK Pvt. Ltd., incorporated 2019 for export market penetration), and has recently appointed an exclusive distributor in Saudi Arabia through Oceanwings Trading Company — signaling active international expansion.</p>
+    <div class="callout">
+      <strong>The Moat:</strong> Indigenous R&D-developed technology in a highly specialized niche. Fluid couplings are engineered components that require deep application expertise — this is not a commoditized business. New entrants face significant technological and certification barriers.
+    </div>
+  </div>
+
+  <!-- Section 2: Key Financial Metrics -->
+  <div class="section">
+    <div class="section-head">
+      <span class="section-num">02</span>
+      <h2 class="section-title">Key Financial Metrics (as of Feb–Mar 2026)</h2>
+      <div class="section-line"></div>
+    </div>
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-label">CMP (Approx.)</div>
+        <div class="kpi-val">₹640</div>
+        <div class="kpi-sub">Near 52W low</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Market Cap</div>
+        <div class="kpi-val">~₹315 Cr</div>
+        <div class="kpi-sub">Micro-cap</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">TTM Revenue</div>
+        <div class="kpi-val green">~₹66 Cr</div>
+        <div class="kpi-sub">FY25: ₹72 Cr</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">TTM Net Profit</div>
+        <div class="kpi-val green">~₹19 Cr</div>
+        <div class="kpi-sub">FY25: ₹22.2 Cr</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">P/E Ratio</div>
+        <div class="kpi-val gold">~16–18x</div>
+        <div class="kpi-sub">Industry: 33x+</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">ROCE</div>
+        <div class="kpi-val green">42.2%</div>
+        <div class="kpi-sub">Exceptional</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">ROE</div>
+        <div class="kpi-val green">31.4%</div>
+        <div class="kpi-sub">3Y avg: 26.2%</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">OPM (FY25)</div>
+        <div class="kpi-val green">39%</div>
+        <div class="kpi-sub">Up from 27% (FY24)</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Debt</div>
+        <div class="kpi-val green">~Zero</div>
+        <div class="kpi-sub">Net cash positive</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Book Value</div>
+        <div class="kpi-val">₹173</div>
+        <div class="kpi-sub">P/B ~3.7x</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Promoter Hold.</div>
+        <div class="kpi-val">53.45%</div>
+        <div class="kpi-sub">Stable/increasing</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Dividend Yield</div>
+        <div class="kpi-val">~1.2%</div>
+        <div class="kpi-sub">₹7.5/share (FY25)</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 3: Historical Financial Performance -->
+  <div class="section">
+    <div class="section-head">
+      <span class="section-num">03</span>
+      <h2 class="section-title">Historical Financial Performance</h2>
+      <div class="section-line"></div>
+    </div>
+    <p>The financial trajectory of Fluidomat is nothing short of remarkable. Revenue was stagnant between FY14–FY21 (~₹25–28 Cr range) but has since entered a powerful structural growth phase. The operating margin expansion from 11–13% (FY18–FY20) to 39% (FY25) demonstrates the power of operating leverage in a niche specialty manufacturer.</p>
+    <table class="revenue-table">
+      <thead>
+        <tr><th>Year</th><th>Sales (₹ Cr)</th><th>Net Profit (₹ Cr)</th><th>OPM %</th><th>EPS (₹)</th><th>YoY Growth</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>FY20</td><td>25</td><td>~2.0</td><td>13%</td><td>~4</td><td>—</td></tr>
+        <tr><td>FY21</td><td>28</td><td>~2.8</td><td>17%</td><td>~5.7</td><td>+40%↑</td></tr>
+        <tr><td>FY22</td><td>33</td><td>~4.5</td><td>19%</td><td>~9.1</td><td>+60%↑</td></tr>
+        <tr><td>FY23</td><td>45</td><td>9.61</td><td>27%</td><td>~19.5</td><td>+114%↑</td></tr>
+        <tr><td>FY24</td><td>55</td><td>13.05</td><td>27%</td><td>~26.5</td><td>+36%↑</td></tr>
+        <tr class="highlight-row"><td>FY25</td><td>72.18</td><td>22.22</td><td>39%</td><td>~45.1</td><td>+70%↑</td></tr>
+        <tr><td>TTM (est.)</td><td>~64–66</td><td>~18–20</td><td>~34%</td><td>~38</td><td>(cyclical dip)</td></tr>
+      </tbody>
+    </table>
+    <p><strong>5-Year Profit CAGR: 47.1%</strong> — this is a compounding machine. The recent Q1 FY26 revenue dip (₹12.39 Cr vs ₹15.59 Cr YoY, down ~21%) followed by recovery in Q2 FY26 (₹16.40 Cr) suggests the Q1 weakness was seasonal/cyclical, not structural.</p>
+    <div class="bar-chart">
+      <div class="bar-row"><span class="bar-label">FY22</span><div class="bar-track"><div class="bar-fill" style="width:18%;background:#8eb8c8;"><span>₹33Cr</span></div></div><span class="bar-val">₹33Cr</span></div>
+      <div class="bar-row"><span class="bar-label">FY23</span><div class="bar-track"><div class="bar-fill" style="width:31%;background:#70a0b8;"><span>₹45Cr</span></div></div><span class="bar-val">₹45Cr</span></div>
+      <div class="bar-row"><span class="bar-label">FY24</span><div class="bar-track"><div class="bar-fill" style="width:38%;background:#4a88a8;"><span>₹55Cr</span></div></div><span class="bar-val">₹55Cr</span></div>
+      <div class="bar-row"><span class="bar-label">FY25</span><div class="bar-track"><div class="bar-fill" style="width:50%;background:#1a6b3c;"><span>₹72Cr</span></div></div><span class="bar-val">₹72Cr</span></div>
+      <div class="bar-row"><span class="bar-label">FY27E</span><div class="bar-track"><div class="bar-fill" style="width:72%;background:#b5430a;"><span>₹105Cr (est.)</span></div></div><span class="bar-val">₹105Cr</span></div>
+    </div>
+  </div>
+
+  <!-- Section 4: Investment Thesis -->
+  <div class="section">
+    <div class="section-head">
+      <span class="section-num">04</span>
+      <h2 class="section-title">Investment Thesis — The Bull Case</h2>
+      <div class="section-line"></div>
+    </div>
+    <div class="bull-bear-grid">
+      <div class="thesis-card bull">
+        <h3>🟢 Structural Tailwinds</h3>
+        <div class="thesis-item"><div class="thesis-bullet">1</div><div>India's massive infrastructure push — thermal power, steel, cement, ports — all require fluid couplings. India plans 80GW+ of new coal power by 2032. Every new power plant is a potential order.</div></div>
+        <div class="thesis-item"><div class="thesis-bullet">2</div><div>PLI schemes and Make in India are boosting domestic manufacturing, which directly feeds Fluidomat's core markets (steel, cement, mining).</div></div>
+        <div class="thesis-item"><div class="thesis-bullet">3</div><div>Replacement demand cycle: fluid couplings last 10–15 years. India's industrial stock installed in 2008–2015 boom is now due for replacement.</div></div>
+      </div>
+      <div class="thesis-card bull">
+        <h3>🟢 Business Quality Metrics</h3>
+        <div class="thesis-item"><div class="thesis-bullet">✓</div><div>ROCE of 42%+ is elite. Very few listed Indian manufacturers sustain this kind of capital efficiency. This reflects genuine competitive moat.</div></div>
+        <div class="thesis-item"><div class="thesis-bullet">✓</div><div>Zero debt, net cash positive balance sheet. No dilution risk. No interest burden.</div></div>
+        <div class="thesis-item"><div class="thesis-bullet">✓</div><div>Operating margins exploded from 11% (FY18) → 39% (FY25), showing strong operating leverage as revenues scaled.</div></div>
+        <div class="thesis-item"><div class="thesis-bullet">✓</div><div>5-Year Profit CAGR of 47.1% — one of the highest in Indian mid/micro-cap manufacturing universe.</div></div>
+      </div>
+      <div class="thesis-card bull">
+        <h3>🟢 Capacity Expansion Catalyst</h3>
+        <div class="thesis-item"><div class="thesis-bullet">★</div><div><strong>Rs. 35 Crore expansion plan approved (Feb 14, 2026)</strong> — adding 2,000 couplings capacity over 2–3 years. This is the single biggest catalyst. Current revenues are ~₹72 Cr/year; this capacity expansion signals management's confidence in a demand trajectory of ₹120–150 Cr revenues within 3 years.</div></div>
+        <div class="thesis-item"><div class="thesis-bullet">★</div><div>Saudi Arabia distributor appointment — international market entry with a structured distribution partner is a new incremental revenue stream not yet priced in.</div></div>
+      </div>
+      <div class="thesis-card bull">
+        <h3>🟢 Valuation — Classic Value Trap or Deep Value?</h3>
+        <div class="thesis-item"><div class="thesis-bullet">$</div><div>Trading at ~16–18x TTM earnings vs industry P/E of 33x. A 66% discount to peers is extraordinary for a company with 42% ROCE and near-zero debt.</div></div>
+        <div class="thesis-item"><div class="thesis-bullet">$</div><div>PEG ratio ~0.34 — statistically one of the cheapest high-growth industrials in India on this metric.</div></div>
+        <div class="thesis-item"><div class="thesis-bullet">$</div><div>From 52W high of ₹1,419 to current ~₹640 = a 55% correction. Fundamentals have NOT deteriorated commensurately — Q2 FY26 revenue was actually up 28.9% QoQ.</div></div>
+        <div class="thesis-item"><div class="thesis-bullet">$</div><div>Market cap of ₹315 Cr on a company doing ₹22 Cr PAT with 47% CAGR = less than 15x PE at a cyclical dip. These are rare entry windows.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 5: Competitive Moat -->
+  <div class="section">
+    <div class="section-head">
+      <span class="section-num">05</span>
+      <h2 class="section-title">Competitive Moat Analysis</h2>
+      <div class="section-line"></div>
+    </div>
+    <p>Veteran investors know that ROCE sustaining above 35–40% over multiple years is the clearest evidence of a genuine economic moat. Fluidomat's moat is multi-layered:</p>
+    <div class="moat-meter">
+      <div class="moat-row"><span class="moat-name">Technology & R&D IP</span><div class="moat-track"><div class="moat-fill" style="width:85%"></div></div><span class="moat-score">8.5/10</span></div>
+      <div class="moat-row"><span class="moat-name">Customer Switching Costs</span><div class="moat-track"><div class="moat-fill" style="width:80%"></div></div><span class="moat-score">8/10</span></div>
+      <div class="moat-row"><span class="moat-name">Niche Market Position</span><div class="moat-track"><div class="moat-fill" style="width:90%"></div></div><span class="moat-score">9/10</span></div>
+      <div class="moat-row"><span class="moat-name">Brand & Certifications</span><div class="moat-track"><div class="moat-fill" style="width:75%"></div></div><span class="moat-score">7.5/10</span></div>
+      <div class="moat-row"><span class="moat-name">Scale Advantages</span><div class="moat-track"><div class="moat-fill" style="width:60%"></div></div><span class="moat-score">6/10</span></div>
+      <div class="moat-row"><span class="moat-name">Distribution Network</span><div class="moat-track"><div class="moat-fill" style="width:55%"></div></div><span class="moat-score">5.5/10</span></div>
+    </div>
+    <p>The most powerful moat is the <strong>niche market dominance + switching costs combination</strong>. When Fluidomat supplies a fluid coupling to a cement plant or a thermal power station, replacing it mid-lifecycle requires requalification, testing, and downtime — the procurement engineers default to the existing supplier. This creates long, sticky customer relationships.</p>
+  </div>
+
+  <!-- Section 6: Anti-Thesis / Risk Factors -->
+  <div class="section">
+    <div class="section-head">
+      <span class="section-num">06</span>
+      <h2 class="section-title">Anti-Thesis — The Bear Case & Key Risks</h2>
+      <div class="section-line"></div>
+    </div>
+    <p>As a seasoned analyst, I must steelman the bear case just as rigorously. Here are the legitimate concerns:</p>
+    <div class="bull-bear-grid">
+      <div class="thesis-card bear">
+        <h3>🔴 Business & Structural Risks</h3>
+        <div class="thesis-item"><div class="thesis-bullet">!</div><div><span class="risk-tag risk-high">HIGH</span><br/><strong>Energy Transition Risk:</strong> Thermal power is Fluidomat's biggest end-market. India's clean energy push could reduce new thermal plant orders over 10–15 years. However, replacement demand for existing installed base remains strong through 2035.</div></div>
+        <div class="thesis-item"><div class="thesis-bullet">!</div><div><span class="risk-tag risk-med">MEDIUM</span><br/><strong>Concentration Risk:</strong> Heavy dependence on power, steel, cement. A downcycle in even two of these sectors simultaneously can sharply cut order inflows — as seen in Q1 FY26.</div></div>
+        <div class="thesis-item"><div class="thesis-bullet">!</div><div><span class="risk-tag risk-med">MEDIUM</span><br/><strong>Technology Disruption:</strong> Variable Frequency Drives (VFDs) are increasingly being used as an alternative to fluid couplings for speed control. If VFD adoption accelerates, it could substitute Fluidomat's variable-speed product line.</div></div>
+      </div>
+      <div class="thesis-card bear">
+        <h3>🔴 Financial & Governance Risks</h3>
+        <div class="thesis-item"><div class="thesis-bullet">!</div><div><span class="risk-tag risk-med">MEDIUM</span><br/><strong>Revenue Lumpiness:</strong> Q1 FY26 showed a 21% YoY revenue decline — revenues are project-based and lumpy. Quarterly results can be very volatile, causing price volatility that tests weak-handed investors.</div></div>
+        <div class="thesis-item"><div class="thesis-bullet">!</div><div><span class="risk-tag risk-med">MEDIUM</span><br/><strong>Promoter Share Sales (historical):</strong> Some data suggests promoters have historically been selling shares. At 53.45%, the holding is still substantial, but any further reduction could be a negative signal.</div></div>
+        <div class="thesis-item"><div class="thesis-bullet">!</div><div><span class="risk-tag risk-low">LOW</span><br/><strong>Liquidity & Micro-Cap Risk:</strong> Market cap of ~₹300 Cr means low daily trading volumes. Large institutional exits can cause disproportionate price falls. Not suitable for very large position sizes.</div></div>
+        <div class="thesis-item"><div class="thesis-bullet">!</div><div><span class="risk-tag risk-low">LOW</span><br/><strong>Execution Risk on Capex:</strong> The ₹35 Cr expansion over 2–3 years. If demand doesn't materialize or execution delays occur, returns on this capex could disappoint.</div></div>
+      </div>
+    </div>
+    <div class="callout">
+      <strong>Analyst's Take on the Anti-Thesis:</strong> The energy transition risk is real but a 10–15 year horizon risk, not a 3–5 year investment thesis killer. VFD substitution is real but incomplete — high-torque applications still prefer fluid couplings. The Q1 FY26 revenue dip was not a structural problem — Q2 FY26 recovered strongly at ₹16.4 Cr. The core thesis remains intact.
+    </div>
+  </div>
+
+  <!-- Section 7: Valuation & Price Targets -->
+  <div class="section">
+    <div class="section-head">
+      <span class="section-num">07</span>
+      <h2 class="section-title">Valuation Framework & Price Targets</h2>
+      <div class="section-line"></div>
+    </div>
+    <p>I use three valuation methods and triangulate to arrive at target prices. All estimates assume CMP of ~₹640 (as of early March 2026) on a base of ~493,636 shares outstanding.</p>
+    <div class="two-col">
+      <div>
+        <h3 style="font-family:'Playfair Display',serif;margin-bottom:12px;font-size:18px;">Method 1: Earnings-Based</h3>
+        <p>FY25 EPS: ~₹45. Assuming 25–30% CAGR earnings growth over next 3 years driven by: (a) capacity expansion, (b) export market development, (c) operating leverage on fixed costs.</p>
+        <p>FY28E EPS (base): ~₹80–90. At a fair P/E of 22–25x (still a discount to industry): <strong>Target = ₹1,760 – ₹2,250</strong></p>
+        <p>FY28E EPS (bull): ~₹100–120. At 25–30x P/E: <strong>Bull Target = ₹2,500 – ₹3,600</strong></p>
+      </div>
+      <div>
+        <h3 style="font-family:'Playfair Display',serif;margin-bottom:12px;font-size:18px;">Method 2: Revenue Multiple</h3>
+        <p>With capacity expansion, FY28E revenue estimate: ₹120–140 Cr. Applying 3–4x Revenue Multiple (conservative for a quality Indian industrials business): Market Cap target of ₹360–560 Cr, implying per-share value of ₹730–1,135.</p>
+        <p>At 5x revenue (comparable to listed peers): <strong>Target = ₹1,200–1,420</strong></p>
+      </div>
+    </div>
+    <div style="margin-top:24px;">
+      <h3 style="font-family:'Playfair Display',serif;margin-bottom:12px;font-size:18px;">Method 3: Historical PE Re-Rating</h3>
+      <p>At its recent peak (July 2025: ₹1,419), Fluidomat was trading at ~32x trailing earnings — roughly in line with its sector. The current 16–18x represents a severe de-rating. Simply reverting to 25x fair-value PE on FY27 earnings gives a 3-year price target of ₹1,500–2,000.</p>
+    </div>
+    <div class="scenario-grid">
+      <div class="scenario-card bear-s">
+        <div class="sc-label">Bear Scenario</div>
+        <div class="sc-price" style="color:var(--red);">₹900</div>
+        <div class="sc-ret" style="color:var(--red);">+40% from ₹640</div>
+        <div class="sc-desc">Energy transition accelerates, VFD adoption hurts variable-speed products, revenue growth slows to 10%. P/E 18x on ₹50 EPS.</div>
+      </div>
+      <div class="scenario-card base">
+        <div class="sc-label">Base Scenario (3Y)</div>
+        <div class="sc-price" style="color:#3a6b20;">₹1,800</div>
+        <div class="sc-ret" style="color:#3a6b20;">+181% from ₹640</div>
+        <div class="sc-desc">Revenue grows to ₹120 Cr by FY28, margins stable at 33–35%, EPS ~₹80, P/E re-rates to 22–23x. Capacity expansion delivers.</div>
+      </div>
+      <div class="scenario-card bull-s">
+        <div class="sc-label">Bull Scenario (5Y)</div>
+        <div class="sc-price" style="color:var(--green);">₹3,500+</div>
+        <div class="sc-ret" style="color:var(--green);">+447% from ₹640</div>
+        <div class="sc-desc">Exports scale up significantly, new end-markets added, revenue ₹200 Cr+ by FY30, EPS ₹150+, P/E 25x. True multi-bagger territory.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 8: Why It Looks Undervalued NOW -->
+  <div class="section">
+    <div class="section-head">
+      <span class="section-num">08</span>
+      <h2 class="section-title">Why It's Undervalued Right Now — The Setup</h2>
+      <div class="section-line"></div>
+    </div>
+    <p>In 25 years of stock analysis, the single most reliable pattern for multi-bagger returns is this: <em>a fundamentally superior business temporarily sold down by 50–60% from its peak due to a cyclical earnings miss or market-wide sell-off, with the long-term business trajectory fully intact.</em> That is precisely the Fluidomat setup in March 2026.</p>
+    <div class="two-col">
+      <div>
+        <h4 style="font-family:'Playfair Display',serif;font-size:17px;margin-bottom:10px;">What's caused the sell-off:</h4>
+        <ul style="padding-left:20px;font-size:14.5px;line-height:1.8;color:#2a2820;">
+          <li>Q1 FY26 revenue dropped 21% YoY — spooked short-term investors</li>
+          <li>Broad mid/small-cap market correction in India (late 2025)</li>
+          <li>General risk-off sentiment in micro-caps</li>
+          <li>Stock moved from ₹559 (Nov 2024) → ₹1,419 (Jul 2025) too fast — needed to digest</li>
+        </ul>
+      </div>
+      <div>
+        <h4 style="font-family:'Playfair Display',serif;font-size:17px;margin-bottom:10px;">Why the thesis is intact:</h4>
+        <ul style="padding-left:20px;font-size:14.5px;line-height:1.8;color:#2a2820;">
+          <li>Q2 FY26: Revenue recovered to ₹16.4 Cr (+28.9% QoQ) ✅</li>
+          <li>FY25 full-year revenues +30%, profits +70% — best year ever ✅</li>
+          <li>₹35 Cr capex expansion approved Feb 2026 ✅</li>
+          <li>Saudi Arabia distribution deal signed ✅</li>
+          <li>Promoter holding stable at 53.45% ✅</li>
+          <li>Zero debt. Cash on books ✅</li>
+        </ul>
+      </div>
+    </div>
+    <div class="callout" style="margin-top:24px;">
+      <strong>Key Insight:</strong> At ₹640, Fluidomat trades at 15–16x FY25 earnings of ₹22 Cr — for a company that has grown earnings at 47% CAGR for 5 years, has 42% ROCE, zero debt, and is just announced a capacity expansion. By any rational measure, this is <strong>significantly undervalued</strong>. The market is offering a quality compounder at a distress valuation due to a temporary cyclical dip.
+    </div>
+  </div>
+
+  <!-- Section 9: Strategy -->
+  <div class="section">
+    <div class="section-head">
+      <span class="section-num">09</span>
+      <h2 class="section-title">Investment Strategy</h2>
+      <div class="section-line"></div>
+    </div>
+    <p><strong>Suggested Accumulation Strategy:</strong> Given the illiquid micro-cap nature of this stock, do not try to time a single entry point. A phased accumulation over 2–3 months is recommended.</p>
+    <div class="two-col">
+      <div style="background:var(--cream);border:1px solid var(--border);border-radius:4px;padding:20px;">
+        <h4 style="font-family:'Playfair Display',serif;font-size:16px;margin-bottom:10px;color:var(--green);">Entry Strategy</h4>
+        <p style="font-size:14px;">Tranche 1 (40% allocation): ₹600–650 — current levels<br/>Tranche 2 (35%): ₹550–580 — if further weakness<br/>Tranche 3 (25%): ₹500–520 — deep value zone<br/><br/>Average Cost Target: ₹580–620</p>
+      </div>
+      <div style="background:var(--cream);border:1px solid var(--border);border-radius:4px;padding:20px;">
+        <h4 style="font-family:'Playfair Display',serif;font-size:16px;margin-bottom:10px;color:var(--accent);">Exit / Review Triggers</h4>
+        <p style="font-size:14px;">Review if: Two consecutive quarters of revenue decline exceeding 25% YoY; Promoter holding falls below 45%; VFD adoption causes structural order book shrinkage; New large-scale domestic competitor emerges.<br/><br/>Don't exit on price correction alone — exit on fundamentals change.</p>
+      </div>
+    </div>
+    <p style="margin-top:20px;"><strong>Time Horizon:</strong> Minimum 3–5 years. This is not a trading opportunity. The multi-bagger thesis requires patience for the capacity expansion to translate into revenue, and for the export market to contribute.</p>
+    <p><strong>Position Sizing:</strong> Given micro-cap illiquidity, keep position size to 3–7% of portfolio. This is a high-reward, medium-risk holding — not a speculative bet, but a conviction bet requiring concentrated position management.</p>
+  </div>
+
+  <!-- Final Verdict -->
+  <div class="final-verdict">
+    <h2>⭐ Final Verdict: STRONG BUY</h2>
+    <p>After 25 years of finding multi-baggers, I can say with conviction that Fluidomat Ltd in March 2026 has the hallmarks of a classic early-stage compounder investment at a distressed valuation. It has the three ingredients I look for: <strong>a durable business with genuine moat, explosive earnings trajectory, and temporary market mispricing</strong>.</p>
+    <div class="verdict-bullets">
+      <div class="vb-item"><span class="vb-dot">◆</span><span>India's #1 fluid coupling manufacturer — niche dominance</span></div>
+      <div class="vb-item"><span class="vb-dot">◆</span><span>47.1% profit CAGR over 5 years — exceptional compounder</span></div>
+      <div class="vb-item"><span class="vb-dot">◆</span><span>42% ROCE, zero debt, net cash positive</span></div>
+      <div class="vb-item"><span class="vb-dot">◆</span><span>₹35 Cr expansion = next growth leg activated</span></div>
+      <div class="vb-item"><span class="vb-dot">◆</span><span>Trading at 15–16x PE vs industry 33x — 50%+ discount</span></div>
+      <div class="vb-item"><span class="vb-dot">◆</span><span>Saudi Arabia export market just opened up</span></div>
+      <div class="vb-item"><span class="vb-dot">◆</span><span>Q2 FY26 recovery proves Q1 dip was cyclical, not structural</span></div>
+      <div class="vb-item"><span class="vb-dot">◆</span><span>3-year base target ₹1,800 (~3x); 5-year bull case ₹3,500+ (~5.5x)</span></div>
+    </div>
+    <p>This is NOT a 50x stock. It is a potential 5–6x stock over 5 years with a margin of safety — and that, in my experience, is exactly where the best risk-adjusted returns in the Indian mid/small-cap universe come from.</p>
+  </div>
+
+  <div class="footnote">
+    <strong>Disclaimer:</strong> This analysis is prepared for informational and educational purposes only. It does not constitute financial advice or a recommendation to buy or sell any security. Investing in micro-cap stocks involves significant risks including illiquidity, business risk, and potential loss of capital. Past performance does not guarantee future results. Please consult a SEBI-registered investment advisor before making investment decisions. Data compiled from publicly available sources including BSE filings, Screener.in, Trendlyne, and company announcements as of March 02, 2026.
+  </div>
+</div>
+</body>
+</html>
