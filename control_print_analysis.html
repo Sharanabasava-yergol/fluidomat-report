@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Control Print Ltd — Multi-Bagger Deep Research</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Mono:wght@300;400;500&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e1a;
+    --bg2: #0f1525;
+    --card: #131c30;
+    --border: #1e2d4a;
+    --accent: #00d4a0;
+    --accent2: #f7b731;
+    --accent3: #e74c3c;
+    --accent4: #3498db;
+    --text: #e8eaf0;
+    --muted: #7a8ba8;
+    --heading: #ffffff;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Lato', sans-serif;
+    font-size: 15px;
+    line-height: 1.7;
+  }
+
+  /* HEADER */
+  .header {
+    background: linear-gradient(135deg, #0a0e1a 0%, #0d1830 50%, #0a1428 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 60px 40px 50px;
+    position: relative;
+    overflow: hidden;
+  }
+  .header::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+    background: radial-gradient(ellipse at 70% 50%, rgba(0,212,160,0.07) 0%, transparent 70%);
+  }
+  .header-grid { max-width: 1100px; margin: 0 auto; position: relative; z-index: 1; }
+  .ticker-badge {
+    display: inline-block;
+    background: var(--accent);
+    color: #0a0e1a;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 2px;
+    padding: 4px 12px;
+    border-radius: 2px;
+    margin-bottom: 18px;
+    text-transform: uppercase;
+  }
+  .header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 52px;
+    font-weight: 900;
+    color: var(--heading);
+    line-height: 1.1;
+    margin-bottom: 12px;
+  }
+  .header h1 span { color: var(--accent); }
+  .header-sub {
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    color: var(--muted);
+    letter-spacing: 1px;
+    margin-bottom: 30px;
+  }
+  .header-stats {
+    display: flex; gap: 40px; flex-wrap: wrap; margin-top: 30px;
+  }
+  .hstat { display: flex; flex-direction: column; }
+  .hstat-label { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--muted); letter-spacing: 2px; text-transform: uppercase; }
+  .hstat-value { font-family: 'DM Mono', monospace; font-size: 22px; font-weight: 500; color: var(--accent); margin-top: 2px; }
+  .hstat-value.red { color: var(--accent3); }
+  .hstat-value.yellow { color: var(--accent2); }
+  .hstat-value.blue { color: var(--accent4); }
+
+  /* VERDICT BANNER */
+  .verdict {
+    background: linear-gradient(90deg, rgba(0,212,160,0.12), rgba(0,212,160,0.04));
+    border: 1px solid var(--accent);
+    border-left: 5px solid var(--accent);
+    margin: 40px auto;
+    max-width: 1100px;
+    padding: 24px 30px;
+    border-radius: 4px;
+    display: flex; align-items: center; gap: 20px;
+  }
+  .verdict-icon { font-size: 36px; flex-shrink: 0; }
+  .verdict-text h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px; font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 4px;
+  }
+  .verdict-text p { color: var(--text); font-size: 14px; line-height: 1.6; }
+
+  /* MAIN LAYOUT */
+  .container { max-width: 1100px; margin: 0 auto; padding: 0 40px 80px; }
+
+  /* SECTION */
+  .section { margin-bottom: 50px; }
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 26px; font-weight: 700;
+    color: var(--heading);
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 12px;
+    margin-bottom: 24px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .section-title .icon { color: var(--accent); font-size: 20px; }
+
+  /* CARD GRID */
+  .card-grid { display: grid; gap: 16px; }
+  .card-grid-2 { grid-template-columns: 1fr 1fr; }
+  .card-grid-3 { grid-template-columns: 1fr 1fr 1fr; }
+  .card-grid-4 { grid-template-columns: repeat(4, 1fr); }
+
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 22px 24px;
+  }
+  .card-title {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px; letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 10px;
+  }
+  .card-value {
+    font-family: 'DM Mono', monospace;
+    font-size: 28px; font-weight: 500;
+    color: var(--accent);
+    margin-bottom: 4px;
+  }
+  .card-value.red { color: var(--accent3); }
+  .card-value.yellow { color: var(--accent2); }
+  .card-value.blue { color: var(--accent4); }
+  .card-desc { font-size: 13px; color: var(--muted); line-height: 1.5; }
+
+  /* METRIC ROW */
+  .metric-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .metric-row:last-child { border-bottom: none; }
+  .metric-label { color: var(--muted); font-size: 13px; }
+  .metric-value { font-family: 'DM Mono', monospace; font-size: 14px; font-weight: 500; color: var(--text); }
+  .metric-value.green { color: var(--accent); }
+  .metric-value.red { color: var(--accent3); }
+  .metric-value.yellow { color: var(--accent2); }
+
+  /* SCORE BAR */
+  .score-item { margin-bottom: 18px; }
+  .score-header { display: flex; justify-content: space-between; margin-bottom: 6px; }
+  .score-label { font-size: 13px; color: var(--text); }
+  .score-pct { font-family: 'DM Mono', monospace; font-size: 13px; color: var(--accent); }
+  .score-bar-bg {
+    background: var(--border);
+    height: 6px; border-radius: 3px;
+    overflow: hidden;
+  }
+  .score-bar-fill {
+    height: 100%; border-radius: 3px;
+    background: linear-gradient(90deg, var(--accent), #00f5b8);
+    transition: width 1s ease;
+  }
+  .score-bar-fill.yellow { background: linear-gradient(90deg, var(--accent2), #ffe066); }
+  .score-bar-fill.red { background: linear-gradient(90deg, var(--accent3), #ff7675); }
+  .score-bar-fill.blue { background: linear-gradient(90deg, var(--accent4), #74b9ff); }
+
+  /* SIGNAL TABLE */
+  .signal-table { width: 100%; border-collapse: collapse; }
+  .signal-table th {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px; letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-align: left;
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg2);
+  }
+  .signal-table td {
+    padding: 13px 14px;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+  }
+  .signal-table tr:last-child td { border-bottom: none; }
+  .signal-table tr:hover td { background: rgba(0,212,160,0.03); }
+  .badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+  .badge-green { background: rgba(0,212,160,0.15); color: var(--accent); border: 1px solid rgba(0,212,160,0.3); }
+  .badge-yellow { background: rgba(247,183,49,0.15); color: var(--accent2); border: 1px solid rgba(247,183,49,0.3); }
+  .badge-red { background: rgba(231,76,60,0.15); color: var(--accent3); border: 1px solid rgba(231,76,60,0.3); }
+  .badge-blue { background: rgba(52,152,219,0.15); color: var(--accent4); border: 1px solid rgba(52,152,219,0.3); }
+
+  /* MOAT BOX */
+  .moat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .moat-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    padding: 18px 20px;
+    border-radius: 4px;
+  }
+  .moat-card.yellow { border-left-color: var(--accent2); }
+  .moat-card.blue { border-left-color: var(--accent4); }
+  .moat-card.red { border-left-color: var(--accent3); }
+  .moat-card h4 {
+    font-size: 13px; font-weight: 700;
+    color: var(--heading);
+    margin-bottom: 6px;
+  }
+  .moat-card p { font-size: 12px; color: var(--muted); line-height: 1.6; }
+
+  /* RAZOR BLADE MODEL */
+  .razor-visual {
+    display: flex; align-items: center; gap: 0;
+    margin: 20px 0;
+    background: var(--bg2);
+    border-radius: 6px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+  .razor-part {
+    flex: 1; padding: 20px 16px; text-align: center;
+  }
+  .razor-part h4 { font-size: 12px; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 6px; }
+  .razor-part .num { font-family: 'DM Mono', monospace; font-size: 24px; color: var(--accent); font-weight: 500; }
+  .razor-part .lbl { font-size: 11px; color: var(--muted); }
+  .razor-arrow {
+    color: var(--accent);
+    font-size: 22px;
+    padding: 0 8px;
+  }
+  .razor-part.highlight { background: rgba(0,212,160,0.07); }
+
+  /* CHART BARS */
+  .bar-chart { display: flex; gap: 14px; align-items: flex-end; height: 160px; padding: 0 10px; }
+  .bar-wrap { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 6px; height: 100%; justify-content: flex-end; }
+  .bar {
+    width: 100%; border-radius: 3px 3px 0 0;
+    background: linear-gradient(180deg, var(--accent), rgba(0,212,160,0.5));
+    transition: height 0.5s ease;
+  }
+  .bar.yellow { background: linear-gradient(180deg, var(--accent2), rgba(247,183,49,0.5)); }
+  .bar-val { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--accent); }
+  .bar-val.yellow { color: var(--accent2); }
+  .bar-lbl { font-size: 10px; color: var(--muted); text-align: center; }
+
+  /* TIMELINE */
+  .timeline { position: relative; padding-left: 30px; }
+  .timeline::before { content:''; position: absolute; left: 8px; top: 0; bottom: 0; width: 2px; background: var(--border); }
+  .timeline-item { position: relative; margin-bottom: 22px; }
+  .timeline-dot {
+    position: absolute; left: -26px; top: 4px;
+    width: 10px; height: 10px; border-radius: 50%;
+    background: var(--accent);
+    border: 2px solid var(--bg);
+  }
+  .timeline-dot.yellow { background: var(--accent2); }
+  .timeline-dot.blue { background: var(--accent4); }
+  .timeline-year { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--accent); margin-bottom: 2px; }
+  .timeline-text { font-size: 13px; color: var(--text); }
+
+  /* RISK TABLE */
+  .risk-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .risk-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 16px 18px;
+  }
+  .risk-card h4 { font-size: 13px; font-weight: 700; color: var(--accent3); margin-bottom: 6px; display: flex; align-items: center; gap: 6px; }
+  .risk-card p { font-size: 12px; color: var(--muted); line-height: 1.6; }
+
+  /* INVESTMENT SUMMARY */
+  .inv-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .inv-box {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 24px;
+  }
+  .inv-box h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px; font-weight: 700;
+    margin-bottom: 16px;
+  }
+  .inv-box.buy { border-top: 3px solid var(--accent); }
+  .inv-box.buy h3 { color: var(--accent); }
+  .inv-box.watch { border-top: 3px solid var(--accent2); }
+  .inv-box.watch h3 { color: var(--accent2); }
+  .inv-item { display: flex; gap: 10px; margin-bottom: 12px; align-items: flex-start; }
+  .inv-item .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); margin-top: 7px; flex-shrink: 0; }
+  .inv-item .dot.yellow { background: var(--accent2); }
+  .inv-item span { font-size: 13px; color: var(--muted); line-height: 1.6; }
+
+  /* FINAL VERDICT */
+  .final-verdict {
+    background: linear-gradient(135deg, rgba(0,212,160,0.1), rgba(0,212,160,0.03));
+    border: 2px solid var(--accent);
+    border-radius: 8px;
+    padding: 40px;
+    text-align: center;
+    margin-top: 50px;
+  }
+  .fv-label { font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 3px; color: var(--muted); text-transform: uppercase; margin-bottom: 10px; }
+  .fv-score {
+    font-family: 'Playfair Display', serif;
+    font-size: 80px; font-weight: 900;
+    color: var(--accent);
+    line-height: 1;
+  }
+  .fv-max { font-family: 'DM Mono', monospace; font-size: 20px; color: var(--muted); }
+  .fv-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px; font-weight: 700;
+    color: var(--heading);
+    margin: 16px 0 10px;
+  }
+  .fv-subtitle { font-size: 14px; color: var(--muted); max-width: 600px; margin: 0 auto 24px; }
+  .fv-target {
+    display: inline-block;
+    background: rgba(0,212,160,0.1);
+    border: 1px solid var(--accent);
+    border-radius: 4px;
+    padding: 12px 28px;
+    font-family: 'DM Mono', monospace;
+    font-size: 16px;
+    color: var(--accent);
+    margin: 0 8px;
+  }
+  .fv-target span { display: block; font-size: 10px; color: var(--muted); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 2px; }
+
+  /* DISCLAIMER */
+  .disclaimer {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 16px 20px;
+    font-size: 11px;
+    color: var(--muted);
+    line-height: 1.6;
+    margin-top: 40px;
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 768px) {
+    .card-grid-2, .card-grid-3, .card-grid-4 { grid-template-columns: 1fr 1fr; }
+    .moat-grid, .risk-grid, .inv-grid { grid-template-columns: 1fr; }
+    .header h1 { font-size: 34px; }
+    .container { padding: 0 20px 60px; }
+    .header { padding: 40px 20px; }
+    .header-stats { gap: 24px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-grid">
+    <div class="ticker-badge">NSE: CONTROLPR &nbsp;|&nbsp; BSE: 522295 &nbsp;|&nbsp; Research Date: 03 Mar 2026</div>
+    <h1>Control Print<br><span>Ltd.</span></h1>
+    <div class="header-sub">CODING & MARKING · TRACK & TRACE · PACKAGING · MULTI-BAGGER RESEARCH REPORT</div>
+    <div class="header-stats">
+      <div class="hstat">
+        <span class="hstat-label">CMP (approx.)</span>
+        <span class="hstat-value">₹659</span>
+      </div>
+      <div class="hstat">
+        <span class="hstat-label">Market Cap</span>
+        <span class="hstat-value">~₹1,054 Cr</span>
+      </div>
+      <div class="hstat">
+        <span class="hstat-label">P/E Ratio</span>
+        <span class="hstat-value yellow">10.6x</span>
+      </div>
+      <div class="hstat">
+        <span class="hstat-label">52W Range</span>
+        <span class="hstat-value blue">₹547 – ₹917</span>
+      </div>
+      <div class="hstat">
+        <span class="hstat-label">Multi-Bagger Score</span>
+        <span class="hstat-value">78/100</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- VERDICT BANNER -->
+<div class="verdict" style="margin: 40px auto; padding: 0 40px;">
+  <div style="max-width:1100px; margin:0 auto; display:flex; align-items:center; gap:20px; width:100%;">
+    <div class="verdict-icon">🔬</div>
+    <div class="verdict-text">
+      <h2>⚡ CONDITIONAL MULTI-BAGGER — ACCUMULATE ON DIPS</h2>
+      <p>Control Print Ltd scores <strong>78/100</strong> on the proprietary Multi-Bagger Detection Framework (MBDF). The standalone India business is a <em>textbook razor-and-blade compounding machine</em> with deep moat, 18-20% market share, and recurring revenue. Near-term pain from European subsidiaries and one-time tax anomaly creates a <strong>rare accumulation window</strong>. Target: ₹1,200–₹1,500 in 24–36 months (80–120% upside from CMP). SIP-style accumulation recommended between ₹620–₹680.</p>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- SECTION 1: KEY METRICS -->
+  <div class="section">
+    <div class="section-title"><span class="icon">📊</span> Key Financial Snapshot (As of 03 Mar 2026)</div>
+    <div class="card-grid card-grid-4">
+      <div class="card">
+        <div class="card-title">Revenue FY25</div>
+        <div class="card-value">₹425 Cr</div>
+        <div class="card-desc">+18.3% YoY growth. 9M FY26 annualised ~₹460–470 Cr.</div>
+      </div>
+      <div class="card">
+        <div class="card-title">PAT FY25</div>
+        <div class="card-value">₹100 Cr</div>
+        <div class="card-desc">+82% YoY. Standalone PAT margin of 31% — phenomenal!</div>
+      </div>
+      <div class="card">
+        <div class="card-title">EV / EBITDA</div>
+        <div class="card-value yellow">~10x</div>
+        <div class="card-desc">Deeply undervalued vs. global peers at 18–25x. PEG ratio 0.15.</div>
+      </div>
+      <div class="card">
+        <div class="card-title">Promoter Holding</div>
+        <div class="card-value">53%</div>
+        <div class="card-desc">Skin in the game. Kabra family. Stable + no pledging.</div>
+      </div>
+      <div class="card">
+        <div class="card-title">Installed Base</div>
+        <div class="card-value blue">22,000+</div>
+        <div class="card-desc">Printers in field. Each printer = recurring ink/consumable annuity.</div>
+      </div>
+      <div class="card">
+        <div class="card-title">Dividend Yield</div>
+        <div class="card-value yellow">~1.5%</div>
+        <div class="card-desc">₹10/share FY25. ₹4 interim declared Jan 2026. Cash-generative.</div>
+      </div>
+      <div class="card">
+        <div class="card-title">P/B Ratio</div>
+        <div class="card-value">2.4x</div>
+        <div class="card-desc">Reasonable. ROCE & ROE >20%. Not stretched on book value.</div>
+      </div>
+      <div class="card">
+        <div class="card-title">52W vs CMP</div>
+        <div class="card-value red">-28%</div>
+        <div class="card-desc">Stock down 28% from 52W high of ₹917. Opportunity zone.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 2: BUSINESS MODEL — RAZOR & BLADE -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🪒</span> The "Razor & Blade" Business Model — The Hidden Moat</div>
+    <p style="color:var(--muted); font-size:13px; margin-bottom:20px;">This is the single most important thing to understand about Control Print. The business model structurally guarantees recurring, sticky revenues — exactly what creates multi-baggers.</p>
+    <div class="razor-visual">
+      <div class="razor-part">
+        <h4>Printers (Razor)</h4>
+        <div class="num">18%</div>
+        <div class="lbl">of revenue — low margin</div>
+      </div>
+      <div class="razor-arrow">→</div>
+      <div class="razor-part highlight">
+        <h4>Consumables (Blade) ♻️</h4>
+        <div class="num">58%</div>
+        <div class="lbl">of revenue — HIGH MARGIN, RECURRING</div>
+      </div>
+      <div class="razor-arrow">→</div>
+      <div class="razor-part">
+        <h4>Spares + Services</h4>
+        <div class="num">22%</div>
+        <div class="lbl">locked-in annuity revenue</div>
+      </div>
+    </div>
+    <div class="card" style="margin-top:14px;">
+      <div class="card-title">Why This Creates a Compounding Machine</div>
+      <p style="font-size:13px; color:var(--muted); line-height:1.8;">
+        Every printer sold creates a <strong style="color:var(--text)">lifetime consumable annuity</strong>. With 22,000+ printers already in the field across India, ~80% of revenue is <em>already locked in</em> before the year starts. Each new printer sold expands this annuity base. Industries like Food, Pharma, Pipes, and FMCG cannot function without date/batch coding — this is <strong style="color:var(--text)">non-discretionary industrial spending</strong>. Switching costs are extremely high once a printer is integrated into a production line.
+      </p>
+    </div>
+
+    <!-- Revenue Trend Bars -->
+    <div class="card" style="margin-top:14px;">
+      <div class="card-title">Revenue Growth Trajectory (₹ Crore)</div>
+      <div class="bar-chart" style="margin-top:14px;">
+        <div class="bar-wrap"><div class="bar" style="height:35%"></div><span class="bar-val">195</span><span class="bar-lbl">FY20</span></div>
+        <div class="bar-wrap"><div class="bar" style="height:42%"></div><span class="bar-val">235</span><span class="bar-lbl">FY21</span></div>
+        <div class="bar-wrap"><div class="bar" style="height:55%"></div><span class="bar-val">285</span><span class="bar-lbl">FY22</span></div>
+        <div class="bar-wrap"><div class="bar" style="height:65%"></div><span class="bar-val">320</span><span class="bar-lbl">FY23</span></div>
+        <div class="bar-wrap"><div class="bar" style="height:75%"></div><span class="bar-val">359</span><span class="bar-lbl">FY24</span></div>
+        <div class="bar-wrap"><div class="bar" style="height:90%"></div><span class="bar-val">425</span><span class="bar-lbl">FY25</span></div>
+        <div class="bar-wrap"><div class="bar" style="height:98%"></div><span class="bar-val">~465E</span><span class="bar-lbl">FY26E</span></div>
+        <div class="bar-wrap"><div class="bar yellow" style="height:100%; opacity:0.8"></div><span class="bar-val yellow">~560E</span><span class="bar-lbl">FY27E</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 3: MBDF SCORES -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🎯</span> Multi-Bagger Detection Framework (MBDF) — Score: 78/100</div>
+    <div class="card-grid card-grid-2">
+      <div class="card">
+        <div class="card-title">Pillar 1: Business Quality</div>
+        <br>
+        <div class="score-item">
+          <div class="score-header"><span class="score-label">Moat Strength</span><span class="score-pct">85%</span></div>
+          <div class="score-bar-bg"><div class="score-bar-fill" style="width:85%"></div></div>
+        </div>
+        <div class="score-item">
+          <div class="score-header"><span class="score-label">Recurring Revenue Quality</span><span class="score-pct">90%</span></div>
+          <div class="score-bar-bg"><div class="score-bar-fill" style="width:90%"></div></div>
+        </div>
+        <div class="score-item">
+          <div class="score-header"><span class="score-label">Pricing Power</span><span class="score-pct">75%</span></div>
+          <div class="score-bar-bg"><div class="score-bar-fill" style="width:75%"></div></div>
+        </div>
+        <div class="score-item">
+          <div class="score-header"><span class="score-label">Market Leadership (India)</span><span class="score-pct">80%</span></div>
+          <div class="score-bar-bg"><div class="score-bar-fill" style="width:80%"></div></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">Pillar 2: Growth Runway</div>
+        <br>
+        <div class="score-item">
+          <div class="score-header"><span class="score-label">Underpenetrated Market TAM</span><span class="score-pct">88%</span></div>
+          <div class="score-bar-bg"><div class="score-bar-fill" style="width:88%"></div></div>
+        </div>
+        <div class="score-item">
+          <div class="score-header"><span class="score-label">Global Expansion Optionality</span><span class="score-pct">70%</span></div>
+          <div class="score-bar-bg"><div class="score-bar-fill" style="width:70%" class="yellow"></div></div>
+        </div>
+        <div class="score-item">
+          <div class="score-header"><span class="score-label">New Business Legs (T&T, Packaging)</span><span class="score-pct">65%</span></div>
+          <div class="score-bar-bg"><div class="score-bar-fill yellow" style="width:65%"></div></div>
+        </div>
+        <div class="score-item">
+          <div class="score-header"><span class="score-label">India Manufacturing Tailwinds</span><span class="score-pct">92%</span></div>
+          <div class="score-bar-bg"><div class="score-bar-fill" style="width:92%"></div></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">Pillar 3: Valuation</div>
+        <br>
+        <div class="score-item">
+          <div class="score-header"><span class="score-label">PE vs. Growth (PEG 0.15)</span><span class="score-pct">95%</span></div>
+          <div class="score-bar-bg"><div class="score-bar-fill" style="width:95%"></div></div>
+        </div>
+        <div class="score-item">
+          <div class="score-header"><span class="score-label">EV/EBITDA vs. Peers</span><span class="score-pct">88%</span></div>
+          <div class="score-bar-bg"><div class="score-bar-fill" style="width:88%"></div></div>
+        </div>
+        <div class="score-item">
+          <div class="score-header"><span class="score-label">Discount to Intrinsic Value</span><span class="score-pct">75%</span></div>
+          <div class="score-bar-bg"><div class="score-bar-fill" style="width:75%"></div></div>
+        </div>
+        <div class="score-item">
+          <div class="score-header"><span class="score-label">Margin of Safety at CMP ₹659</span><span class="score-pct">78%</span></div>
+          <div class="score-bar-bg"><div class="score-bar-fill" style="width:78%"></div></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">Pillar 4: Management & Governance</div>
+        <br>
+        <div class="score-item">
+          <div class="score-header"><span class="score-label">Capital Allocation Quality</span><span class="score-pct">72%</span></div>
+          <div class="score-bar-bg"><div class="score-bar-fill" style="width:72%"></div></div>
+        </div>
+        <div class="score-item">
+          <div class="score-header"><span class="score-label">Promoter Integrity & Vision</span><span class="score-pct">80%</span></div>
+          <div class="score-bar-bg"><div class="score-bar-fill" style="width:80%"></div></div>
+        </div>
+        <div class="score-item">
+          <div class="score-header"><span class="score-label">Debt-Free Balance Sheet</span><span class="score-pct">90%</span></div>
+          <div class="score-bar-bg"><div class="score-bar-fill" style="width:90%"></div></div>
+        </div>
+        <div class="score-item">
+          <div class="score-header"><span class="score-label">Dividend + Cash Return History</span><span class="score-pct">82%</span></div>
+          <div class="score-bar-bg"><div class="score-bar-fill" style="width:82%"></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 4: HIDDEN SIGNALS -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🔍</span> Hidden Multi-Bagger Signals — What the Market is Missing</div>
+    <table class="signal-table">
+      <thead>
+        <tr>
+          <th>Signal</th>
+          <th>What It Means</th>
+          <th>Significance</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="color:var(--text); font-weight:700;">🏭 Only Indian Integrated Manufacturer</td>
+          <td style="color:var(--muted);">Control Print is the <em>only</em> Indian company that manufactures both coding equipment AND consumables in India. Every competitor (Videojet, Domino, Markem-Imaje) is MNC.</td>
+          <td style="color:var(--muted);">"Make in India" policy tailwind + cost advantage of 25-30% vs. MNC peers</td>
+          <td><span class="badge badge-green">🟢 Strong Moat</span></td>
+        </tr>
+        <tr>
+          <td style="color:var(--text); font-weight:700;">📦 QRiousCodes — The NFT/QR Track & Trace Play</td>
+          <td style="color:var(--muted);">QRiousCodes uses blockchain-linked QR codes to fight counterfeiting. The anti-counterfeiting market in India is ₹15,000+ Cr and growing rapidly. This is a pure SaaS-model business embedded into packaging lines.</td>
+          <td style="color:var(--muted);">Once adopted, it becomes the operating backbone of a brand's supply chain — near-impossible to switch out. High margin recurring revenue potential.</td>
+          <td><span class="badge badge-yellow">🟡 Early Stage</span></td>
+        </tr>
+        <tr>
+          <td style="color:var(--text); font-weight:700;">💉 Pharma + FMCG Regulatory Push</td>
+          <td style="color:var(--muted);">India's new Drug & Cosmetics rules mandate serialization and track-and-trace for pharma packaging. FSSAI mandates date coding on all food products. These regulations are non-optional.</td>
+          <td style="color:var(--muted);">Regulation creates captive demand for Control Print's exact products. Every new pharma unit or FMCG factory is a forced customer.</td>
+          <td><span class="badge badge-green">🟢 Structural Tailwind</span></td>
+        </tr>
+        <tr>
+          <td style="color:var(--text); font-weight:700;">🌍 Global Acquisition Optionality (Markprint + Codeology)</td>
+          <td style="color:var(--muted);">Acquired Netherlands-based Markprint BV (2022) and UK-based Codeology (2024) for tiny sums (~€4.5M total). These give global tech access + European market footholds.</td>
+          <td style="color:var(--muted);">Currently loss-making and masking India profitability. Once breakeven in FY27, consolidated EPS will re-rate sharply. The hidden earnings acceleration play.</td>
+          <td><span class="badge badge-yellow">🟡 Turnaround</span></td>
+        </tr>
+        <tr>
+          <td style="color:var(--text); font-weight:700;">💰 Tax Anomaly in Q3 FY26 = False Alarm</td>
+          <td style="color:var(--muted);">Q3 FY26 saw a 58.75% effective tax rate vs. historical 15–26%. This is due to deferred tax adjustments and new labor code gratuity provisions — a one-time non-cash item. Standalone PAT grew 35% on PBT basis.</td>
+          <td style="color:var(--muted);">Market panicked and sold the stock down. This is the exact type of temporary noise that creates multi-bagger entry windows. The underlying business is healthy.</td>
+          <td><span class="badge badge-blue">🔵 Opportunity</span></td>
+        </tr>
+        <tr>
+          <td style="color:var(--text); font-weight:700;">🏗️ India Infra + PLI Scheme Beneficiary</td>
+          <td style="color:var(--muted);">PLI schemes across 14 sectors are driving a CapEx super-cycle in India. Every new factory needs coding and marking equipment. Control Print is a pure-play beneficiary of India's manufacturing renaissance.</td>
+          <td style="color:var(--muted);">As capacity addition in food, pharma, electronics, and pipes accelerates, installed base will grow 15-20% faster than historical rates.</td>
+          <td><span class="badge badge-green">🟢 Accelerating</span></td>
+        </tr>
+        <tr>
+          <td style="color:var(--text); font-weight:700;">🤖 Middle East Expansion (New Subsidiary)</td>
+          <td style="color:var(--muted);">Control Print is establishing a subsidiary in the Middle East. UAE + GCC is a high-margin, high-growth geography with heavy industrial activity and negligible local competition.</td>
+          <td style="color:var(--muted);">Nascent but optionality-rich. Even a small GCC business could add ₹30–50 Cr revenue in 3 years.</td>
+          <td><span class="badge badge-blue">🔵 Watch List</span></td>
+        </tr>
+        <tr>
+          <td style="color:var(--text); font-weight:700;">📉 Institutional Under-Ownership = Re-rating Fuel</td>
+          <td style="color:var(--muted);">Total institutional holding is only 3.55% (FII + DII). This is extremely low. Any discovery by even one mid-cap fund can cause significant re-rating.</td>
+          <td style="color:var(--muted);">When a company with 18-20% market share, ₹100 Cr profit, and growing installed base gets discovered by institutions, re-rating from 10x PE to 20-25x PE is entirely plausible.</td>
+          <td><span class="badge badge-green">🟢 Re-rating Potential</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- SECTION 5: MOAT ANALYSIS -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🏰</span> Competitive Moat Analysis</div>
+    <div class="moat-grid">
+      <div class="moat-card">
+        <h4>⚙️ Switching Cost Moat</h4>
+        <p>Once a Control Print CIJ printer is integrated into a production line, switching requires halting production, retooling, retraining operators, and recertifying lines. Companies avoid this at all costs. Switching cost is estimated at ₹5–10 Lakh per printer installation including downtime costs.</p>
+      </div>
+      <div class="moat-card yellow">
+        <h4>🔬 Integrated Manufacturing Moat</h4>
+        <p>Making both the printer hardware AND the inks/ribbons/consumables in-house means Control Print has full control over the technology stack, margins, and customer lock-in. MNCs manufacture in Europe/USA and import. Control Print's COGS advantage is structural, not cyclical.</p>
+      </div>
+      <div class="moat-card blue">
+        <h4>🌐 Service Network Moat</h4>
+        <p>Over 300 trained field service engineers across 1,700+ cities in India. No competitor has this service density. In a 24/7 production environment, 4-hour service SLAs beat anything an MNC importer can offer. This network took 30 years to build and cannot be replicated cheaply.</p>
+      </div>
+      <div class="moat-card red">
+        <h4>📜 Brand + Regulatory Moat</h4>
+        <p>Control Print has CRISIL credit ratings, BIS certification for its products, FSSAI compliance baked in, and a 30+ year track record. New entrants face 3-5 years of certification cycles before they can legally compete for pharma or food sector orders.</p>
+      </div>
+      <div class="moat-card">
+        <h4>🔒 Data & Track-Trace Lock-In</h4>
+        <p>QRiousCodes creates a digital supply chain fingerprint for a brand. Once a company migrates their traceability to QRiousCodes, all historical data, customer-facing apps, and regulatory submissions are integrated. This is a decade-long lock-in once adopted.</p>
+      </div>
+      <div class="moat-card yellow">
+        <h4>💧 Consumables Annuity Moat</h4>
+        <p>Proprietary ink formulations are chemically optimized for Control Print print-heads. Using third-party inks voids warranties and risks print quality. This creates a captive recurring revenue stream worth 58% of revenues — growing with every new printer sold.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 6: GROWTH TIMELINE -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🗓️</span> Growth Catalyst Timeline (2026–2029)</div>
+    <div class="card">
+      <div class="timeline">
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="timeline-year">Q4 FY26 / Q1 FY27 (Mar–Jun 2026)</div>
+          <div class="timeline-text">European packaging (V-Shapes Italy) breaks even. One-time tax provisions normalize. Consolidated PAT inflects sharply. Stock likely re-rates to ₹800–900 range. Track & Trace patent negotiations conclude — QRiousCodes becomes a billable product line.</div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot yellow"></div>
+          <div class="timeline-year">FY27 Full Year</div>
+          <div class="timeline-text">Standalone revenue crosses ₹500 Cr. Middle East subsidiary generates first meaningful revenues. Codeology UK reaches breakeven. Institutional discovery begins — first mid-cap fund adds CONTROLPR to portfolio. PE re-rating from 10x → 14-15x. Price target ₹1,000.</div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot blue"></div>
+          <div class="timeline-year">FY28</div>
+          <div class="timeline-text">QRiousCodes scales to ₹40–60 Cr revenue with 40%+ margins. India PLI manufacturing wave creates exponential new customer additions. Installed base crosses 28,000 printers. Consumable revenues alone could hit ₹300+ Cr. Analyst coverage expands. Target ₹1,200–₹1,400.</div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="timeline-year">FY29 (36-Month Horizon)</div>
+          <div class="timeline-text">Consolidated revenue potential of ₹700–800 Cr with 20%+ net margins. If PE re-rates to 18–20x (justified for a quality compounder), market cap crosses ₹2,500–₹3,000 Cr. From CMP of ₹1,054 Cr market cap — that is a 2.5–3x return = 150–200% gain. True multi-bagger territory.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 7: VALUATION ANALYSIS -->
+  <div class="section">
+    <div class="section-title"><span class="icon">📐</span> Valuation Deep-Dive — Is It Undervalued?</div>
+    <div class="card-grid card-grid-2">
+      <div class="card">
+        <div class="card-title">Current Valuation Metrics</div>
+        <div class="metric-row"><span class="metric-label">Price-to-Earnings (TTM)</span><span class="metric-value green">10.6x ✅</span></div>
+        <div class="metric-row"><span class="metric-label">PEG Ratio</span><span class="metric-value green">0.15x ✅ (Screaming undervalued)</span></div>
+        <div class="metric-row"><span class="metric-label">EV/EBITDA</span><span class="metric-value green">~10x ✅</span></div>
+        <div class="metric-row"><span class="metric-label">P/B Ratio</span><span class="metric-value green">2.4x ✅</span></div>
+        <div class="metric-row"><span class="metric-label">Standalone PAT Margin</span><span class="metric-value green">31% ✅</span></div>
+        <div class="metric-row"><span class="metric-label">Market Cap / Revenue</span><span class="metric-value green">~2.3x ✅</span></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Peer Comparison (PE Ratios)</div>
+        <div class="metric-row"><span class="metric-label">Control Print (CONTROLPR)</span><span class="metric-value green">10.6x 🔥</span></div>
+        <div class="metric-row"><span class="metric-label">Altius Telecom (Peer)</span><span class="metric-value red">51.8x</span></div>
+        <div class="metric-row"><span class="metric-label">Sagility (Peer)</span><span class="metric-value red">29.6x</span></div>
+        <div class="metric-row"><span class="metric-label">Videojet (Global, Danaher)</span><span class="metric-value yellow">22–25x</span></div>
+        <div class="metric-row"><span class="metric-label">Domino Printing Sciences (UK)</span><span class="metric-value yellow">18–22x</span></div>
+        <div class="metric-row"><span class="metric-label">Fair Value PE (Target)</span><span class="metric-value green">18–20x (justified for moat)</span></div>
+      </div>
+    </div>
+    <div class="card" style="margin-top:14px;">
+      <div class="card-title">Intrinsic Value Estimate — 3 Scenarios</div>
+      <table class="signal-table" style="margin-top:10px;">
+        <thead>
+          <tr><th>Scenario</th><th>FY28 EPS Estimate</th><th>Target PE</th><th>Intrinsic Value</th><th>Upside from ₹659</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="color:var(--accent3); font-weight:700;">🐻 Bear Case</td>
+            <td style="color:var(--muted);">₹55 (slow growth, margins stay compressed)</td>
+            <td style="color:var(--muted);">14x</td>
+            <td style="color:var(--accent3);">₹770</td>
+            <td><span class="badge badge-yellow">+17%</span></td>
+          </tr>
+          <tr>
+            <td style="color:var(--accent2); font-weight:700;">🐂 Base Case</td>
+            <td style="color:var(--muted);">₹75 (15-17% growth, Europe breakeven)</td>
+            <td style="color:var(--muted);">17x</td>
+            <td style="color:var(--accent2);">₹1,275</td>
+            <td><span class="badge badge-green">+93%</span></td>
+          </tr>
+          <tr>
+            <td style="color:var(--accent); font-weight:700;">🚀 Bull Case</td>
+            <td style="color:var(--muted);">₹90 (QRiousCodes scales, Middle East contributes, T&T inflects)</td>
+            <td style="color:var(--muted);">22x</td>
+            <td style="color:var(--accent);">₹1,980</td>
+            <td><span class="badge badge-green">+200%</span></td>
+          </tr>
+        </tbody>
+      </table>
+      <p style="font-size:12px; color:var(--muted); margin-top:12px;">* EPS estimates based on 15-20% standalone CAGR + European subsidiaries reaching breakeven. PE re-rating justified by quality of business model and institutional discovery. All figures are estimates only.</p>
+    </div>
+  </div>
+
+  <!-- SECTION 8: RISKS -->
+  <div class="section">
+    <div class="section-title"><span class="icon">⚠️</span> Risks — What Could Go Wrong</div>
+    <div class="risk-grid">
+      <div class="risk-card">
+        <h4>💸 European Subsidiary Drag</h4>
+        <p>V-Shapes (Italy), Markprint (Netherlands), and Codeology (UK) are currently loss-making and dragging down consolidated earnings. If turnaround takes longer than expected (beyond FY27), it weighs on consolidated PAT and investor sentiment.</p>
+      </div>
+      <div class="risk-card">
+        <h4>⚡ Laser Printer Disruption</h4>
+        <p>Laser coders are gaining share in certain segments (metal, cable). Though management asserts laser's limitations (compatibility, safety, cost), a faster-than-expected technology shift could reduce CIJ consumable demand over time.</p>
+      </div>
+      <div class="risk-card">
+        <h4>📊 Small Cap Liquidity Risk</h4>
+        <p>At ₹1,054 Cr market cap with only 3.55% institutional holding, liquidity is limited. Exit during market stress can be challenging. Not suitable for large portfolio allocations. Suitable for patient, long-horizon investors.</p>
+      </div>
+      <div class="risk-card">
+        <h4>🧾 Tax Uncertainty</h4>
+        <p>The Q3 FY26 58.75% effective tax rate raised concerns. While management attributed it to deferred tax and new labor code provisions, if higher tax rates persist, standalone EPS estimates will need to be revised downward by 10-15%.</p>
+      </div>
+      <div class="risk-card">
+        <h4>🌏 MNC Competition</h4>
+        <p>Global giants like Videojet (Danaher), Domino, and Markem-Imaje are well-capitalized. Any aggressive pricing or technological push by these players into mid-market segments could pressure Control Print's market share.</p>
+      </div>
+      <div class="risk-card">
+        <h4>📦 Capital Allocation Concerns</h4>
+        <p>Acquisitions in Europe (V-Shapes at €3.7M, Codeology at £1M, Markprint at €1.5M) are strategic but create integration complexity. If management over-diversifies or makes expensive acquisitions, return on capital could dilute. Close monitoring required.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 9: INVEST NOW? -->
+  <div class="section">
+    <div class="section-title"><span class="icon">💡</span> Should You Invest Now? — Entry Strategy</div>
+    <div class="inv-grid">
+      <div class="inv-box buy">
+        <h3>✅ YES — Reasons to Buy Now</h3>
+        <div class="inv-item"><div class="dot"></div><span>Stock is <strong>28% below its 52-week high</strong> (₹917.50). Fear and confusion around one-time Q3 tax item has created a rare entry window.</span></div>
+        <div class="inv-item"><div class="dot"></div><span>At <strong>PEG of 0.15</strong> — one of the most undervalued quality businesses in Indian small-cap space. Rule: any PEG below 0.5 with strong moat = BUY.</span></div>
+        <div class="inv-item"><div class="dot"></div><span>Standalone business growing 15-16% YoY with <strong>highest ever Q3 revenue</strong> and 21% EBITDA growth. Core business is intact and accelerating.</span></div>
+        <div class="inv-item"><div class="dot"></div><span>European subsidiaries approaching breakeven (targeting Q1-Q4 FY27). When consolidated PAT normalizes, EPS jump of 30-40% is likely in one year.</span></div>
+        <div class="inv-item"><div class="dot"></div><span><strong>₹10/share annual dividend</strong> at ₹659 means ~1.5% yield with potential for increase. Downside cushioned by cashflows.</span></div>
+        <div class="inv-item"><div class="dot"></div><span>India manufacturing CapEx boom directly benefits Control Print — it is an <strong>unavoidable B2B supplier</strong> in the Indian industrial value chain.</span></div>
+      </div>
+      <div class="inv-box watch">
+        <h3>⚠️ Conditions & Caution Points</h3>
+        <div class="inv-item"><div class="dot yellow"></div><span>Do NOT expect quick 3-6 month returns. This is a <strong>24–36 month thesis</strong>. Patience is required while European subsidiaries work through execution issues.</span></div>
+        <div class="inv-item"><div class="dot yellow"></div><span>Monitor Q4 FY26 results (May 2026) closely. If tax rate normalizes and consolidated PAT recovers, it confirms the investment thesis. That is the first key milestone.</span></div>
+        <div class="inv-item"><div class="dot yellow"></div><span>Limit allocation to <strong>5-8% of portfolio</strong> given small-cap liquidity risk. This is not a position to size up heavily upfront.</span></div>
+        <div class="inv-item"><div class="dot yellow"></div><span>Use <strong>SIP/staggered buying</strong> — accumulate between ₹620–₹700. Do not chase if it moves above ₹750 without Q4 results confirmation.</span></div>
+        <div class="inv-item"><div class="dot yellow"></div><span>Watch for any promoter selling above 1-2% — that would be a red flag requiring re-evaluation of thesis.</span></div>
+        <div class="inv-item"><div class="dot yellow"></div><span>If QRiousCodes fails to gain commercial traction by FY27, the bull case scenario falls away. Monitor its revenue contribution in each quarterly call.</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FINAL VERDICT -->
+  <div class="final-verdict">
+    <div class="fv-label">Proprietary Multi-Bagger Detection Framework — Final Score</div>
+    <div class="fv-score">78<span class="fv-max">/100</span></div>
+    <div class="fv-title">CONDITIONAL MULTI-BAGGER — ACCUMULATE</div>
+    <div class="fv-subtitle">Control Print Ltd is a fundamentally sound, moat-heavy Indian compounder currently misunderstood by the market due to temporary European losses and a one-time tax anomaly. The standalone India business is exceptional. At ₹659, the margin of safety is adequate for patient investors.</div>
+    <div style="margin: 20px 0;">
+      <div class="fv-target"><span>Entry Zone</span>₹620 – ₹700</div>
+      <div class="fv-target"><span>Base Case Target (24M)</span>₹1,200 – ₹1,400</div>
+      <div class="fv-target"><span>Bull Case Target (36M)</span>₹1,800 – ₹2,000</div>
+    </div>
+    <p style="font-size:12px; color:var(--muted); margin-top: 16px;">Time Horizon: 24–36 months &nbsp;|&nbsp; Risk: Medium (Small Cap) &nbsp;|&nbsp; Allocation: 5–8% of portfolio &nbsp;|&nbsp; Strategy: SIP/Accumulate on dips</p>
+  </div>
+
+  <!-- DISCLAIMER -->
+  <div class="disclaimer">
+    ⚠️ <strong>IMPORTANT DISCLAIMER:</strong> This report is for educational and informational purposes only and does not constitute investment advice, a solicitation, or a recommendation to buy or sell any securities. Stock markets are subject to risks. The author and this report are not registered with SEBI as an investment advisor. All financial data is sourced from publicly available sources including BSE, NSE, Screener.in, company investor presentations, and earnings call transcripts as of 03 March 2026. Historical performance is not indicative of future results. Please consult a SEBI-registered investment advisor before making any investment decisions. All price targets and estimates are speculative projections based on publicly available data and proprietary analytical frameworks.
+  </div>
+
+</div>
+</body>
+</html>
